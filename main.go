@@ -16,9 +16,11 @@ var (
 	visitedPathset = make(map[string]bool)
 	docsBase       string
 	baseUrl        string
+	stop           int
 )
 
 func main() {
+	stop = 3
 	// get command line args
 	firstPageInDocs := os.Args[1]
 	docsBase = os.Args[2]
@@ -28,16 +30,21 @@ func main() {
 	getLinksRecursively(firstPageInDocs)
 	// save link as pdf
 	for k, _ := range visitedPathset {
-		p.GetPageAsPdf(k)
+		p.GetPageAsPdf(baseUrl+k, baseUrl)
 	}
 
 }
 
 func getLinksRecursively(url string) {
+	if stop == 0 {
+		return
+	}
+
 	// check if link is alreadu visisted
 	if visitedPathset[url] {
 		return
 	}
+	stop = stop - 1
 	// add tto visisted
 	visitedPathset[url] = true
 	fmt.Println("visit url :", url, baseUrl)
