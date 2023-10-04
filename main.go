@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
@@ -20,7 +21,8 @@ var (
 )
 
 func main() {
-	stop = 1
+	stop = 3
+	fmt.Println(url.Parse("https://nuxt.com//docs"))
 	// get command line args
 	firstPageInDocs := os.Args[1]
 	docsBase = os.Args[2]
@@ -30,7 +32,7 @@ func main() {
 	getLinksRecursively(firstPageInDocs)
 	// save link as pdf
 	for k, _ := range visitedPathset {
-		p.GetPageAsPdf(baseUrl+k, baseUrl)
+		p.GetPageAsPdf(k, baseUrl)
 	}
 
 }
@@ -39,25 +41,16 @@ func getLinksRecursively(url string) {
 	if stop == 0 {
 		return
 	}
-
 	// check if link is alreadu visisted
 	if visitedPathset[url] {
 		return
 	}
-	stop = stop - 1
+	stop--
 	// add tto visisted
 	visitedPathset[url] = true
-	fmt.Println("visit url :", url, baseUrl)
-	// get full url
-	updatedUrl := func() string {
-		if strings.Split(url, docsBase)[0] == "/" {
-			return baseUrl + url
-		} else {
-			return url
-		}
-	}()
+	fmt.Println("visit url :", url)
 	// parse full url
-	doc, err := ParseWebApp(updatedUrl)
+	doc, err := ParseWebApp(url)
 	if err != nil {
 		fmt.Println("error parsing the webapp")
 	}
@@ -71,17 +64,17 @@ func getLinksRecursively(url string) {
 			// is under docs
 			if isAvailable(strings.Split(href, "/"), docsBase) {
 				// this href is for current page
-				if strings.Split(href, docsBase)[0] == "/" {
+				if isAvailable(strings.Split(href, "/"), "https") {
 					getLinksRecursively(strings.Split(href, "#")[0])
+				} else {
+					getLinksRecursively(strings.Split(baseUrl+href[1:], "#")[0])
 				}
-
 			} else {
 				return
 			}
 		}
 	})
 }
-
 func isAvailable(alpha []string, str string) bool {
 	// iterate using the for loop
 	for i := 0; i < len(alpha); i++ {

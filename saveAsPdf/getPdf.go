@@ -30,26 +30,25 @@ func GetPageAsPdf(URL string, baseUrl string) {
 	// file path
 	fileName := "./assets/" + hostname
 	if _, err := os.Stat("./assets/" + hostname); os.IsNotExist(err) {
-		err = os.Mkdir(fileName, 0755)
+		_ = os.Mkdir(fileName, 0755)
 	}
 	// splited url
-	splitedUrl := strings.Split(func() string {
-		if len(strings.Split(URL, "docs")) == 2 {
-			return strings.Split(URL, "docs/")[1]
-		}
-
-		return "docs"
-	}(), "/")
-	// last url
-	for i, k := range splitedUrl {
-		if i == len(splitedUrl)-1 {
-			fileName = fileName + k + ".pdf"
-		} else {
-			_ = os.Mkdir(fileName+k, 0755)
-			fileName = fileName + k + "/"
+	if URL == baseUrl {
+		fileName = fileName + "/docs.pdf"
+	} else {
+		withOutBase := strings.TrimPrefix(URL, baseUrl)
+		splitedUrl := strings.Split(withOutBase, "/")
+		fileName = fileName + "/"
+		for i, k := range splitedUrl {
+			if i == len(splitedUrl)-1 {
+				fileName = fileName + k + ".pdf"
+			} else {
+				_ = os.Mkdir(fileName+k, 0755)
+				fileName = fileName + k + "/"
+			}
 		}
 	}
-
+	fmt.Println(fileName, URL, len(strings.Split(URL, "docs")), strings.Split(URL, "docs"))
 	if err := os.WriteFile(fileName, buf, 0o644); err != nil {
 		log.Fatal(err)
 	}
