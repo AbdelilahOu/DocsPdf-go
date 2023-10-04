@@ -31,7 +31,7 @@ func main() {
 	// get all links
 	getLinksRecursively(firstPageInDocs)
 	// save link as pdf
-	for k, _ := range visitedPathset {
+	for k := range visitedPathset {
 		p.GetPageAsPdf(k, baseUrl)
 	}
 
