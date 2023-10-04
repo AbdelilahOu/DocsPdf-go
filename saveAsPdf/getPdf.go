@@ -11,7 +11,7 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-func getPageAsPdf(URL string, docsPath string) {
+func GetPageAsPdf(URL string) {
 	// create context
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()

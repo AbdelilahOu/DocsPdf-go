@@ -6,13 +6,14 @@ import (
 	"os"
 	"strings"
 
+	p "github.com/AbdelilahOu/DocsPdf-go/saveAsPdf"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/cdproto/dom"
 	"github.com/chromedp/chromedp"
 )
 
 var (
-	visitedPathset []string
+	visitedPathset = make(map[string]bool)
 	docsBase       string
 	baseUrl        string
 )
@@ -25,15 +26,20 @@ func main() {
 	baseUrl = strings.Split(firstPageInDocs, docsBase)[0]
 	// get all links
 	getLinksRecursively(firstPageInDocs)
+	// save link as pdf
+	for k, _ := range visitedPathset {
+		p.GetPageAsPdf(k)
+	}
+
 }
 
 func getLinksRecursively(url string) {
 	// check if link is alreadu visisted
-	if isAvailable(visitedPathset, url) {
+	if visitedPathset[url] {
 		return
 	}
 	// add tto visisted
-	visitedPathset = append(visitedPathset, url)
+	visitedPathset[url] = true
 	fmt.Println("visit url :", url, baseUrl)
 	// get full url
 	updatedUrl := func() string {
@@ -59,8 +65,9 @@ func getLinksRecursively(url string) {
 			if isAvailable(strings.Split(href, "/"), docsBase) {
 				// this href is for current page
 				if strings.Split(href, docsBase)[0] == "/" {
-					getLinksRecursively(href)
+					getLinksRecursively(strings.Split(href, "#")[0])
 				}
+
 			} else {
 				return
 			}
