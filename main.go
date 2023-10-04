@@ -69,7 +69,6 @@ func getLinksRecursively(url string) {
 }
 
 func isAvailable(alpha []string, str string) bool {
-
 	// iterate using the for loop
 	for i := 0; i < len(alpha); i++ {
 		// check
