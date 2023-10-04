@@ -28,14 +28,17 @@ func GetPageAsPdf(URL string, baseUrl string) {
 	}
 	hostname := strings.Split(strings.TrimPrefix(url.Hostname(), "www."), ".")[0]
 	// file path
-	fileName := "../assets/" + hostname
+	fileName := "./assets/" + hostname
+	if _, err := os.Stat("./assets/" + hostname); os.IsNotExist(err) {
+		err = os.Mkdir(fileName, 0755)
+	}
 	// splited url
 	splitedUrl := strings.Split(func() string {
-		if strings.Contains(URL, "docs/") {
+		if len(strings.Split(URL, "docs")) == 2 {
 			return strings.Split(URL, "docs/")[1]
-
 		}
-		return URL + "/docs/"
+
+		return "docs"
 	}(), "/")
 	// last url
 	for i, k := range splitedUrl {

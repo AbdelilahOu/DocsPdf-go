@@ -20,7 +20,7 @@ var (
 )
 
 func main() {
-	stop = 3
+	stop = 1
 	// get command line args
 	firstPageInDocs := os.Args[1]
 	docsBase = os.Args[2]
