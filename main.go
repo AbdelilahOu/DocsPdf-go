@@ -21,7 +21,7 @@ var (
 )
 
 func main() {
-	stop = 3
+	stop = 8
 	fmt.Println(url.Parse("https://nuxt.com//docs"))
 	// get command line args
 	firstPageInDocs := os.Args[1]
