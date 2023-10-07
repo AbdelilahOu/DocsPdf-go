@@ -21,7 +21,7 @@ var (
 )
 
 func main() {
-	stop = 8
+	stop = -1
 	fmt.Println(url.Parse("https://nuxt.com//docs"))
 	// get command line args
 	firstPageInDocs := os.Args[1]
@@ -61,30 +61,17 @@ func getLinksRecursively(url string) {
 		// get href
 		href, exist := s.Attr("href")
 		if exist {
-			// is under docs
-			if isAvailable(strings.Split(href, "/"), docsBase) {
-				// this href is for current page
-				if isAvailable(strings.Split(href, "/"), "https") {
-					getLinksRecursively(strings.Split(href, "#")[0])
-				} else {
-					getLinksRecursively(strings.Split(baseUrl+href[1:], "#")[0])
-				}
+			if strings.HasPrefix(href, "/"+docsBase) {
+				// href="/docs/sth"
+				getLinksRecursively(strings.Split(baseUrl+href[1:], "#")[0])
+			} else if strings.HasPrefix(href, baseUrl) && strings.Contains(href, docsBase) {
+				// href="https://nuxt.com/docs/sth"
+				getLinksRecursively(strings.Split(href, "#")[0])
 			} else {
 				return
 			}
 		}
 	})
-}
-func isAvailable(alpha []string, str string) bool {
-	// iterate using the for loop
-	for i := 0; i < len(alpha); i++ {
-		// check
-		if alpha[i] == str {
-			// return true
-			return true
-		}
-	}
-	return false
 }
 
 // parse dynamic webapp
