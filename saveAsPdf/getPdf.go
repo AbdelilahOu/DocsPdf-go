@@ -52,7 +52,7 @@ func GetPageAsPdf(URL string, baseUrl string) {
 	if err := os.WriteFile(fileName, buf, 0o644); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("wrote sample.pdf")
+	fmt.Println("wrote :", fileName)
 }
 
 // print a specific pdf page.

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"os"
 	"strings"
 
@@ -22,7 +21,6 @@ var (
 
 func main() {
 	stop = -1
-	fmt.Println(url.Parse("https://nuxt.com//docs"))
 	// get command line args
 	firstPageInDocs := os.Args[1]
 	docsBase = os.Args[2]
@@ -61,6 +59,9 @@ func getLinksRecursively(url string) {
 		// get href
 		href, exist := s.Attr("href")
 		if exist {
+			if strings.HasSuffix(href, "/") {
+				href = href[:len(href)-1]
+			}
 			if strings.HasPrefix(href, "/"+docsBase) {
 				// href="/docs/sth"
 				getLinksRecursively(strings.Split(baseUrl+href[1:], "#")[0])
