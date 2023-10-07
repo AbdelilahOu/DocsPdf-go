@@ -59,9 +59,9 @@ func getLinksRecursively(url string) {
 		// get href
 		href, exist := s.Attr("href")
 		if exist {
-			if strings.HasSuffix(href, "/") {
-				href = href[:len(href)-1]
-			}
+			// trim / in the end if it exists
+			href = strings.TrimSuffix(href, "/")
+			//
 			if strings.HasPrefix(href, "/"+docsBase) {
 				// href="/docs/sth"
 				getLinksRecursively(strings.Split(baseUrl+href[1:], "#")[0])
