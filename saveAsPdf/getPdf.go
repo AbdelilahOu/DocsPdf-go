@@ -60,7 +60,7 @@ func printToPDF(urlstr string, res *[]byte) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.Navigate(urlstr),
 		chromedp.ActionFunc(func(ctx context.Context) error {
-			buf, _, err := page.PrintToPDF().WithPrintBackground(false).Do(ctx)
+			buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPaperHeight(12).Do(ctx)
 			if err != nil {
 				return err
 			}
